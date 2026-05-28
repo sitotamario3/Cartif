@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Cyber-Pet</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #282c34; color: white; padding-top: 50px; }
+        .pet-container { background: #333842; width: 320px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .stat { font-size: 20px; margin: 10px 0; }
+        .status-alive { color: #98c379; font-weight: bold; }
+        .status-dead { color: #e06c75; font-weight: bold; }
+        button { font-size: 16px; padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        #feed-btn { background: #e5c07b; color: #000; }
+        #play-btn { background: #61afef; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="pet-container">
+        <h1>👾 Cyber-Pet</h1>
+        <div id="pet-status" class="status-alive">STATUS: HAPPY & HEALTHY</div>
+        
+        <hr style="border-color: #4b5263; margin: 20px 0;">
+
+        <div class="stat">🍖 Hunger: <span id="hunger-count">100</span>%</div>
+        <div class="stat">🧸 Happiness: <span id="happy-count">100</span>%</div>
+
+        <br>
+        <button id="feed-btn">Feed Snack (+10 Hunger)</button>
+        <button id="play-btn">Play Game (+10 Happiness)</button>
+    </div>
+
+<script>
+    // --- Pet Stats ---
+    let hunger = 100;
+    let happiness = 100;
+    let isAlive = true;
+
+    // --- DOM Elements ---
+    const hungerDisplay = document.getElementById("hunger-count");
+    const happyDisplay = document.getElementById("happy-count");
+    const statusDisplay = document.getElementById("pet-status");
+
+    // --- Game Loop (Stats drop every 1.5 seconds) ---
+    // Bug Hint: Something is wrong with how this timer is running.
+    setInterval(decayStats(), 1500); 
+
+    function decayStats() {
+        if (!isAlive) return;
+
+        hunger -= 10;
+        happiness -= 10;
+
+        // Cap stats at 0
+        if (hunger < 0) hunger = 0;
+        if (happiness < 0) happiness = 0;
+
+        checkPetStatus();
+        updateScreen();
+    }
+
+    // --- Actions ---
+    document.getElementById("feed-btn").addEventListener("click", function() {
+        if (!isAlive) return;
+        // Bug Hint: Pay attention to data types! What happens to the display when you click Feed?
+        hunger += "10"; 
+        if (hunger > 100) hunger = 100;
+        updateScreen();
+    });
+
+    document.getElementById("play-btn").addEventListener("click", function() {
+        if (!isAlive) return;
+        happiness += 10;
+        if (happiness > 100) happiness = 100;
+        updateScreen();
+    });
+
+    // --- Logic Checks ---
+    function checkPetStatus() {
+        // Bug Hint: Does the pet actually realize when BOTH stats hit 0? 
+        if (hunger === 0 && happiness === 0) {
+            isAlive = false;
+            statusDisplay.textContent = "STATUS: PET RAN AWAY! 😭";
+            statusDisplay.className = "status-dead";
+        }
+    }
+
+    // --- UI Update ---
+    function updateScreen() {
+        hungerDisplay.textContent = hunger;
+        happyDisplay.textContent = happiness;
+    }
+</script>
+</body>
+</html>

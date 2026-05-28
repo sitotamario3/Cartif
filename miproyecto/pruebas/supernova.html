@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmic Star Lifecycle</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #0a0a16 0%, #020205 100%);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Cosmic Dashboard */
+    #dashboard {
+      position: absolute;
+      top: 30px;
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    #status-panel {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    #stage-name {
+      font-weight: bold;
+      transition: color 0.5s ease;
+    }
+
+    /* Canvas Stage Container */
+    #universe {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Base Star Structure */
+    #star {
+      border-radius: 50%;
+      transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    /* --- Evolution Stages via CSS Classes --- */
+
+    /* 1. Protostar */
+    .stage-protostar {
+      width: 25px;
+      height: 25px;
+      background: radial-gradient(circle, #e0f2fe 0%, #38bdf8 70%, transparent 100%);
+      box-shadow: 0 0 30px #0284c7, 0 0 60px rgba(56, 189, 248, 0.4);
+    }
+
+    /* 2. Massive Blue Star (Main Sequence) */
+    .stage-main-sequence {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, #ffffff 10%, #60a5fa 60%, #2563eb 90%);
+      box-shadow: 0 0 50px #3b82f6, 0 0 100px rgba(37, 99, 234, 0.6), inset 0 0 15px rgba(255,255,255,0.8);
+    }
+
+    /* 3. Red Supergiant */
+    .stage-supergiant {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, #fef08a 0%, #f97316 50%, #dc2626 90%);
+      box-shadow: 0 0 80px #ea580c, 0 0 150px rgba(220, 38, 38, 0.5);
+      animation: pulse 2s infinite alternate ease-in-out;
+    }
+
+    /* 4. Supernova Explosion Burst */
+    .stage-supernova {
+      width: 600px !important;
+      height: 600px !important;
+      background: radial-gradient(circle, #ffffff 0%, #f472b6 30%, #c084fc 60%, transparent 80%);
+      box-shadow: 0 0 200px #ffffff, 0 0 400px #a855f7;
+      opacity: 0;
+      transform: scale(1.5);
+      transition: all 0.6s ease-out !important;
+    }
+
+    /* 5. Black Hole Singularity */
+    .stage-blackhole {
+      width: 40px;
+      height: 40px;
+      background: #000000;
+      box-shadow: 0 0 0 4px #000, 0 0 25px rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Accretion Disk for the Black Hole */
+    .stage-blackhole::before {
+      content: '';
+      position: absolute;
+      top: -40px; left: -40px; right: -40px; bottom: -40px;
+      border-radius: 50%;
+      background: transparent;
+      border: 8px double #f97316;
+      box-shadow: 0 0 40px #ea580c, inset 0 0 30px #f43f5e;
+      transform: rotateX(70deg);
+      animation: spin 3s linear infinite;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 80px #ea580c; }
+      100% { transform: scale(1.05); box-shadow: 0 0 110px #dc2626; }
+    }
+
+    @keyframes spin {
+      100% { transform: rotateX(70deg) rotate(360deg); }
+    }
+
+    /* Reset Action Button */
+    #reset-btn {
+      position: absolute;
+      bottom: 40px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #94a3b8;
+      padding: 10px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+    #reset-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="dashboard">
+    <h1>Stellar Evolution</h1>
+    <div id="status-panel">
+      Age: <span id="age-counter">0</span> Million Years | 
+      Stage: <span id="stage-name">Protostar</span>
+    </div>
+  </div>
+
+  <div id="universe">
+    <div id="star" class="stage-protostar"></div>
+  </div>
+
+  <button id="reset-btn" onclick="restartCycle()">Rewind Time</button>
+
+  <script>
+    let age = 0;
+    let evolutionInterval;
+    const starElement = document.getElementById('star');
+    const ageCounter = document.getElementById('age-counter');
+    const stageName = document.getElementById('stage-name');
+
+    const STAGES = {
+      PROTOSTAR: { maxAge: 2, name: 'Protostar', class: 'stage-protostar', color: '#38bdf8' },
+      MAIN_SEQUENCE: { maxAge: 6, name: 'Massive Blue Star', class: 'stage-main-sequence', color: '#60a5fa' },
+      SUPERGIANT: { maxAge: 10, name: 'Red Supergiant', class: 'stage-supergiant', color: '#ef4444' },
+      SUPERNOVA: { maxAge: 11, name: 'Supernova Explosion!', class: 'stage-supernova', color: '#f472b6' },
+      BLACK_HOLE: { maxAge: Infinity, name: 'Black Hole Singularity', class: 'stage-blackhole', color: '#a855f7' }
+    };
+
+    function updateEvolution() {
+      age++;
+      ageCounter.textContent = age;
+
+      // Determine current stage based on age seconds
+      let currentStage;
+      if (age <= STAGES.PROTOSTAR.maxAge) {
+        currentStage = STAGES.PROTOSTAR;
+      } else if (age <= STAGES.MAIN_SEQUENCE.maxAge) {
+        currentStage = STAGES.MAIN_SEQUENCE;
+      } else if (age <= STAGES.SUPERGIANT.maxAge) {
+        currentStage = STAGES.SUPERGIANT;
+      } else if (age === STAGES.SUPERNOVA.maxAge) {
+        currentStage = STAGES.SUPERNOVA;
+        
+        // Supernova flash is brief; transition quickly to black hole
+        setTimeout(() => {
+          if (age === STAGES.SUPERNOVA.maxAge) { // Ensure hasn't been reset
+            starElement.className = STAGES.BLACK_HOLE.class;
+            stageName.textContent = STAGES.BLACK_HOLE.name;
+            stageName.style.color = STAGES.BLACK_HOLE.color;
+          }
+        }, 800);
+      } else {
+        currentStage = STAGES.BLACK_HOLE;
+      }
+
+      // Apply update unless handled by the supernova timeout transition
+      if (age !== STAGES.SUPERNOVA.maxAge || currentStage === STAGES.SUPERNOVA) {
+        starElement.className = currentStage.class;
+        stageName.textContent = currentStage.name;
+        stageName.style.color = currentStage.color;
+      }
+    }
+
+    function startCycle() {
+      clearInterval(evolutionInterval);
+      evolutionInterval = setInterval(updateEvolution, 1000);
+    }
+
+    function restartCycle() {
+      age = 0;
+      ageCounter.textContent = age;
+      starElement.className = STAGES.PROTOSTAR.class;
+      stageName.textContent = STAGES.PROTOSTAR.name;
+      stageName.style.color = STAGES.PROTOSTAR.color;
+      startCycle();
+    }
+
+    // Initialize simulation on load
+    startCycle();
+  </script>
+</body>
+</html>
