@@ -1,3 +1,4 @@
+package miproyecto.pruebasjava;
 /**
  * DESCRIPTION:
  * This app is meant to take an array of temperatures in Fahrenheit,

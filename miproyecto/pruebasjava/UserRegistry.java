@@ -1,3 +1,5 @@
+package miproyecto.pruebasjava;
+
 /**
  * DESCRIPTION:
  * This app is meant to register a list of usernames and email addresses.

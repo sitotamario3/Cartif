@@ -1,4 +1,4 @@
-package miproyecto;
+package miproyecto.appPersona;
 public class AppPersona{
     
     public static void main (String[] args){

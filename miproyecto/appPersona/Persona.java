@@ -1,4 +1,4 @@
-package miproyecto;
+package miproyecto.appPersona;
 public class Persona{
 
     private int edad;
